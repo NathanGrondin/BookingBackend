@@ -1,6 +1,6 @@
 import {addUser, user} from "../database/repositories/users";
 import { Request, Response } from "express";
-
+import {hashString} from "../utilityFunctions/encryptionUtility"
 export const addUserEndpoint = async (req: Request, res: Response) => {
     const {username, password, email} = req.body;
     const userToAdd = req.body as user
@@ -14,6 +14,7 @@ export const addUserEndpoint = async (req: Request, res: Response) => {
     }
 
     try{
+        hashedPassword = hashString
         await addUser(userToAdd)
         res.status(200).json({})
     }
