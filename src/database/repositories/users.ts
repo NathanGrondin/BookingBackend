@@ -6,11 +6,14 @@ export interface user {
   username: string
   password: string
   email: string
-  role: string
+  role: string | undefined
 }
 
 export const addUser = async (user: user): Promise<void> => {
   const { username, password, email, role } = user
+  if (!role) {
+    throw new Error('role is undefined')
+  }
   await db.insert(users).values({ username, password, email, role })
 }
 
