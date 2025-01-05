@@ -1,7 +1,9 @@
-import { addUser, user } from '../database/repositories/users'
+import {addUser, getUserByUsernamePassword, user} from '../database/repositories/users'
 import { Request, Response } from 'express'
 import { hashString } from '../utilityFunctions/encryptionUtility'
 import { isValidEmail } from '../utilityFunctions/regex'
+import {generateToken, JwtPayload, verifyToken} from "../utilityFunctions/authentication";
+
 
 export const addUserEndpoint = async (req: Request, res: Response) : Promise<void> => {
   const { username, password, email } = req.body
@@ -28,5 +30,30 @@ export const addUserEndpoint = async (req: Request, res: Response) : Promise<voi
     res.status(200).send()
   } catch (error) {
     res.status(500).send({ error: (error as Error).message })
+  }
+}
+
+export const login = async (req: Request, res: Response) : Promise<void> => {
+  const {username, password} = req.body
+
+  if (!username || !password) {
+    res.status(400).json({ error: 'missing username or password' })
+  }
+
+  const hashedPassword = await hashString(password)
+  const user = await getUserByUsernamePassword(username, hashedPassword)
+
+  if (!user) {
+    res.status(400).json({ error: 'wrong username or password' })
+  }
+
+  else{
+    const payload : JwtPayload = {
+      userId:user.id || -1,
+      role:user.role || 'guest'
+
+    }
+    const token = generateToken(payload)
+    res.json({token})
   }
 }

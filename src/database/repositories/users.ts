@@ -3,6 +3,7 @@ import { users } from '../schema'
 import { and, eq } from 'drizzle-orm'
 
 export interface user {
+  id: number | undefined
   username: string
   password: string
   email: string
@@ -26,7 +27,7 @@ export const getUserByUsernamePassword = async (
     .from(users)
     .where(and(eq(users.username, username), eq(users.password, password)))
   if (result.length < 1) {
-    throw new Error('Could not find user')
+    return null
   }
   return result[0]
 }
