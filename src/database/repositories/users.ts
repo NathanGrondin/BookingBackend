@@ -20,14 +20,29 @@ export const addUser = async (user: user): Promise<void> => {
 
 export const getUserByUsernamePassword = async (
   username: string,
-  password: string
+  hashedPassword: string
 ): Promise<user | null> => {
   const result = await db
     .select()
     .from(users)
-    .where(and(eq(users.username, username), eq(users.password, password)))
+    .where(and(eq(users.username, username), eq(users.password, hashedPassword)))
   if (result.length < 1) {
     return null
   }
   return result[0]
 }
+
+export const getUserByUsername = async (
+    username: string,
+): Promise<user | null> => {
+  const result = await db
+      .select()
+      .from(users)
+      .where(eq(users.username, username))
+  if (result.length < 1) {
+    return null
+  }
+  return result[0]
+}
+
+

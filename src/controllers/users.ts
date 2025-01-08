@@ -1,6 +1,6 @@
-import {addUser, getUserByUsernamePassword, user} from '../database/repositories/users'
+import {addUser, getUserByUsername, getUserByUsernamePassword, user} from '../database/repositories/users'
 import { Request, Response } from 'express'
-import { hashString } from '../utilityFunctions/encryptionUtility'
+import { hashString, verifyString } from '../utilityFunctions/encryptionUtility'
 import { isValidEmail } from '../utilityFunctions/regex'
 import {generateToken, JwtPayload, verifyToken} from "../utilityFunctions/authentication";
 
@@ -8,7 +8,7 @@ import {generateToken, JwtPayload, verifyToken} from "../utilityFunctions/authen
 export const addUserEndpoint = async (req: Request, res: Response) : Promise<void> => {
   const { username, password, email } = req.body
   const userToAdd = req.body as user
-  userToAdd.role = 'guest'
+  userToAdd.role = 'admin'
 
   if (
     !username ||
@@ -35,25 +35,29 @@ export const addUserEndpoint = async (req: Request, res: Response) : Promise<voi
 
 export const login = async (req: Request, res: Response) : Promise<void> => {
   const {username, password} = req.body
-
+  console.log('trying to log in')
+  console.log(req.body)
   if (!username || !password) {
     res.status(400).json({ error: 'missing username or password' })
   }
 
-  const hashedPassword = await hashString(password)
-  const user = await getUserByUsernamePassword(username, hashedPassword)
+  const user = await getUserByUsername(username)
 
-  if (!user) {
+  if (!user || !(await verifyString(password, user.password))) {
+    console.log('cant get user')
     res.status(400).json({ error: 'wrong username or password' })
   }
 
   else{
+    console.log('found user, generating payload')
     const payload : JwtPayload = {
       userId:user.id || -1,
       role:user.role || 'guest'
 
     }
     const token = generateToken(payload)
-    res.json({token})
+    console.log('token generated')
+    console.log(token)
+    res.status(200).json({token})
   }
 }

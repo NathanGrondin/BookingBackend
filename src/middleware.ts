@@ -15,11 +15,13 @@ export const authenticateToken = (
 
     if (!token) {
         res.status(401).json({ error: "Access token required" });
+        return
     }
 
     try {
+
         const payload = verifyToken(token);
-        req.user = payload; // Attach the payload to the request object
+        req.user = payload;
         next();
 
     } catch (error) {

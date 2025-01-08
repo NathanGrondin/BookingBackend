@@ -11,3 +11,4 @@ export const verifyString = async (
 ): Promise<boolean> => {
   return bcrypt.compare(plainString, hashedString)
 }
+
