@@ -35,8 +35,7 @@ export const addUserEndpoint = async (req: Request, res: Response) : Promise<voi
 
 export const login = async (req: Request, res: Response) : Promise<void> => {
   const {username, password} = req.body
-  console.log('trying to log in')
-  console.log(req.body)
+
   if (!username || !password) {
     res.status(400).json({ error: 'missing username or password' })
   }
@@ -44,20 +43,16 @@ export const login = async (req: Request, res: Response) : Promise<void> => {
   const user = await getUserByUsername(username)
 
   if (!user || !(await verifyString(password, user.password))) {
-    console.log('cant get user')
     res.status(400).json({ error: 'wrong username or password' })
   }
 
   else{
-    console.log('found user, generating payload')
     const payload : JwtPayload = {
       userId:user.id || -1,
       role:user.role || 'guest'
 
     }
     const token = generateToken(payload)
-    console.log('token generated')
-    console.log(token)
     res.status(200).json({token})
   }
 }
