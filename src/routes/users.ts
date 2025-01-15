@@ -1,8 +1,8 @@
 import { Router } from 'express'
 import { addUserEndpoint } from '../controllers/users'
 
-const router = Router()
+const userRouter = Router()
 
-router.post('/addUser', addUserEndpoint)
+userRouter.post('/addUser', addUserEndpoint)
 
-export default router
+export default userRouter
