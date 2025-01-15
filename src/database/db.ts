@@ -2,7 +2,7 @@ import { drizzle } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
 
 const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL,
+  connectionString: "postgresql://user:pass@localhost:5432/booking-backend",
 })
 
 export const db = drizzle(pool)
@@ -24,7 +24,7 @@ export async function initializeDatabase() {
     CREATE TABLE IF NOT EXISTS lifts (
         id SERIAL PRIMARY KEY,
         name TEXT NOT NULL,
-        userId INTEGER NOT NULL,
+        userid INTEGER NOT NULL,
         reps INTEGER NOT NULL,
         weight INTEGER NOT NULL,
         date INTEGER NOT NULL

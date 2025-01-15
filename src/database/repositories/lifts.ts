@@ -3,7 +3,7 @@ import {lifts} from '../schema'
 import { and, eq } from 'drizzle-orm'
 
 export interface lift {
-    userId: number
+    userid: number
     name: string
     reps: number
     weight: number
@@ -11,11 +11,11 @@ export interface lift {
 }
 
 export const addLift = async (lift: lift): Promise<void> => {
-    const { userId, name, reps, weight, date } = lift
-    if (!userId || !name || !reps || !weight || !date) {
+    const { userid, name, reps, weight, date } = lift
+    if (!userid || !name || !reps || !weight || !date) {
         throw new Error('missing params for lift')
     }
-    await db.insert(lifts).values({ userId, name, reps, weight, date })
+    await db.insert(lifts).values({ userid, name, reps, weight, date })
 }
 
 export const getLiftsByUserAndName = async (
@@ -25,9 +25,7 @@ export const getLiftsByUserAndName = async (
     const result = await db
         .select()
         .from(lifts)
-        .where(and(eq(lifts.userId, userId), eq(lifts.name, name)))
-    if (result.length < 1) {
-        throw new Error('Could not find user')
-    }
+        .where(and(eq(lifts.userid, userId), eq(lifts.name, name)))
+
     return result
 }
