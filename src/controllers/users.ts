@@ -46,13 +46,13 @@ export const login = async (req: Request, res: Response) : Promise<void> => {
     res.status(400).json({ error: 'wrong username or password' })
   }
 
-  else{
-    const payload : JwtPayload = {
-      userId:user.id || -1,
-      role:user.role || 'guest'
 
-    }
-    const token = generateToken(payload)
-    res.status(200).json({token})
+  const payload : JwtPayload = {
+    userId:user?.id || -1,
+    role:user?.role || 'guest'
+
   }
+  const token = generateToken(payload)
+  res.status(200).json({token})
+
 }

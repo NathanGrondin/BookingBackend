@@ -27,7 +27,7 @@ export const getUserByUsernamePassword = async (
     .from(users)
     .where(and(eq(users.username, username), eq(users.password, hashedPassword)))
   if (result.length < 1) {
-    return null
+    throw new Error('Could not find user')
   }
   return result[0]
 }
@@ -40,7 +40,7 @@ export const getUserByUsername = async (
       .from(users)
       .where(eq(users.username, username))
   if (result.length < 1) {
-    return null
+    throw new Error('Could not find user')
   }
   return result[0]
 }
