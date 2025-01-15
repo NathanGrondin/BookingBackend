@@ -21,7 +21,7 @@ export const addLift = async (lift: lift): Promise<void> => {
 export const getLiftsByUserAndName = async (
     userId: number,
     name: string
-): Promise<lift[] | null> => {
+): Promise<lift[]> => {
     const result = await db
         .select()
         .from(lifts)
