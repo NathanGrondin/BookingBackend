@@ -11,7 +11,7 @@ export const users = pgTable('users', {
 export const lifts = pgTable('lifts', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
-  userId: integer("userId").notNull(),
+  userid: integer("userid").notNull(),
   reps: integer("reps").notNull(),
   weight: integer("weight").notNull(),
   date: integer("date").notNull(),
