@@ -1,11 +1,11 @@
 import {addUser, getUserByUsername, user} from '../database/repositories/users'
-import { Request, Response } from 'express'
+import {Application, Request, Response} from 'express'
 import { hashString, verifyString } from '../utilityFunctions/encryptionUtility'
 import { isValidEmail } from '../utilityFunctions/regex'
 import {generateToken, JwtPayload, verifyToken} from "../utilityFunctions/authentication";
 
 
-export const addUserEndpoint = async (req: Request, res: Response) => {
+export const addUserEndpoint = async (req: Request, res: Response) : Promise<any>  => {
   const { username, password, email } = req.body
   const userToAdd = req.body as user
   userToAdd.role = 'admin'
@@ -33,8 +33,9 @@ export const addUserEndpoint = async (req: Request, res: Response) => {
   }
 }
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response) : Promise<any>  => {
   try {
+    console.log('trying to generate token')
     const {username, password} = req.body
 
     if (!username || !password) {
@@ -44,6 +45,7 @@ export const login = async (req: Request, res: Response) => {
     const user = await getUserByUsername(username)
 
     if (!user || !(await verifyString(password, user.password))) {
+      console.log('bad credential')
       return res.status(400).json({ error: 'wrong username or password' })
     }
 
@@ -53,6 +55,7 @@ export const login = async (req: Request, res: Response) => {
 
     }
     const token = generateToken(payload)
+    console.log(token)
     return res.status(200).json({token})
   }
 

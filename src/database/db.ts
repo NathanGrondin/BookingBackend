@@ -20,15 +20,23 @@ export async function initializeDatabase() {
     );
   `)
 
-  console.log('initializing lifts')
+  console.log('initializing sets')
   await db.execute(`
-    CREATE TABLE IF NOT EXISTS lifts (
+    CREATE TABLE IF NOT EXISTS sets (
         id SERIAL PRIMARY KEY,
-        name TEXT NOT NULL,
+        exerciseid INTEGER NOT NULL,
         userid INTEGER NOT NULL,
         reps INTEGER NOT NULL,
         weight INTEGER NOT NULL,
-        date INTEGER NOT NULL
+        date BIGINT NOT NULL
+    );
+  `)
+
+  console.log('initializing exercises')
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS exercises (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL UNIQUE
     );
   `)
 }
