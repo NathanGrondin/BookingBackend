@@ -1,4 +1,4 @@
-import {text, pgTable, serial, integer} from 'drizzle-orm/pg-core'
+import {text, pgTable, serial, integer, bigint} from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -8,11 +8,18 @@ export const users = pgTable('users', {
   role: text('role').notNull(),
 })
 
-export const lifts = pgTable('lifts', {
+export const sets = pgTable('sets', {
   id: serial('id').primaryKey(),
-  name: text('name').notNull(),
+  exerciseid: integer('exerciseid').notNull(),
   userid: integer("userid").notNull(),
   reps: integer("reps").notNull(),
   weight: integer("weight").notNull(),
-  date: integer("date").notNull(),
+  date: bigint("date", {mode: "number"}).notNull(),
 })
+
+export const exercises = pgTable('exercises', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull().unique(),
+})
+
+
