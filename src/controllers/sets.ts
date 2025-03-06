@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import {
-    addSet,
+    addSet, getHighscores,
     getUserSetsSummaries,
     Set,
 } from "../database/repositories/sets";
@@ -29,24 +29,42 @@ export const addSetEndpoint = async (req: Request, res: Response): Promise<any> 
 }
 
 export const getUserSetSummary = async (req: Request, res: Response): Promise<any>  => {
+    try {
 
-    const userId = parseInt(req.query.userId as string, 0)
-    if (!userId) {
+        const userId = parseInt(req.query.userId as string, 0)
+        if (!userId) {
 
-        return res.status(400).json({ error: 'missing userId' })
+            return res.status(400).json({ error: 'missing userId' })
+        }
+
+        const userSummary = await getUserSetsSummaries(userId)
+
+        if (!userSummary) {
+            return res.status(400).json({ error: 'could not get lifts' })
+        }
+
+        return res.status(200).json(userSummary);
+
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send({ error: (error as Error).message })
     }
 
-    const userSummary = await getUserSetsSummaries(userId)
+}
 
-    if (!userSummary) {
-        return res.status(400).json({ error: 'could not get lifts' })
+export const getHighscoresEndpoint = async (req: Request, res: Response): Promise<any>  => {
+    try {
+        const highscores = await getHighscores()
+        return res.status(200).json(highscores);
+
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send({ error: (error as Error).message })
     }
-
-    return res.status(200).json(userSummary);
 }
 
 export function calculateMax(lift: Set): number {
-    return lift.weight * (1 + lift.reps / 30);
+    return Math.floor(lift.weight * (1 + (lift.reps-1) / 30))
 }
 
 

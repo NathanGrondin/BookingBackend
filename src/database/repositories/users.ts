@@ -1,6 +1,6 @@
 import { db } from '../db'
 import { users } from '../schema'
-import { and, eq } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 
 export interface user {
   id: number | undefined
@@ -30,5 +30,19 @@ export const getUserByUsername = async (
   }
   return result[0]
 }
+
+export const getUserById = async (
+    userId: number,
+): Promise<user | null> => {
+  const result = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+  if (result.length < 1) {
+    throw new Error('Could not find user')
+  }
+  return result[0]
+}
+
 
 
